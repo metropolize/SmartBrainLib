@@ -78,7 +78,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	/**
 	 * Set the length that the task should run for, once activated. The value used
 	 * is in <i>ticks</i>.
-	 * 
+	 *
 	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
@@ -92,7 +92,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * Set the length that the task should wait for between activations. This is the
 	 * time between when the task stops, and it is able to start again. The value
 	 * used is in <i>ticks</i>
-	 * 
+	 *
 	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
@@ -106,7 +106,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * Set an additional condition for the behaviour to be able to start. Useful for
 	 * dynamically predicating behaviours.<br>
 	 * Prevents this behaviour starting unless this predicate returns true.
-	 * 
+	 *
 	 * @param predicate The predicate
 	 * @return this
 	 */
@@ -121,7 +121,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * stopping behaviours. Has no effect on one-shot behaviours that don't have a
 	 * runtime.<br>
 	 * Stops the behaviour if it is active and this predicate returns true.
-	 * 
+	 *
 	 * @param predicate The predicate
 	 * @return this
 	 */
@@ -138,6 +138,18 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 */
 	public final ExtendedBehaviour<E> noTimeout() {
 		return runFor(entity -> Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Whether this behavior fulfills all conditions to start based on
+     * {@link ExtendedBehaviour#doStartCheck(ServerLevel, LivingEntity, long)}.
+	 *
+	 * @param level The level the entity is in
+	 * @param entity The entity the brain belongs to
+	 * @return Whether the behavior can start
+	 */
+	public final boolean canStart(ServerLevel level, E entity) {
+		return doStartCheck(level, entity, level.getGameTime());
 	}
 
 	@Override
@@ -241,7 +253,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * method should only be overridden by other abstract subclasses.<br>
 	 * If overriding, ensure you either call super or manually call the
 	 * {@link ExtendedBehaviour#stopCondition} check yourself.
-	 * 
+	 *
 	 * @param level    The level the entity is in
 	 * @param entity   The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
@@ -257,7 +269,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * {@link ExtendedBehaviour#tick(E)}. <br>
 	 * Memories are not guaranteed to be in their required state here, so if you
 	 * have required memories, it might be worth checking them here.
-	 * 
+	 *
 	 * @param entity The owner of the brain
 	 * @return Whether the behaviour should continue ticking
 	 */

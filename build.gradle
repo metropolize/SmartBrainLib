@@ -31,11 +31,11 @@ subprojects {
 	publishing {
 		repositories {
 			maven {
-				name = "Cloudsmith"
-				url 'https://maven.cloudsmith.io/tslat/sbl/'
+				name = "GitHubPackages"
+				url = "https://maven.pkg.github.com/metropolize/SmartBrainLib"
 				credentials {
-					username System.getenv("CLOUDSMITH_USERNAME")
-					password System.getenv("CLOUDSMITH_API_KEY")
+					username = project.properties.get("GITHUB_USERNAME")
+					password = project.properties.get("GITHUB_TOKEN")
 				}
 			}
 		}

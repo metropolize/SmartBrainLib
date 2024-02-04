@@ -1,8 +1,9 @@
 plugins {
+    id 'maven-publish'
+    id 'java'
+    id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'io.github.CDAGaming.cursegradle' version '1.6.1'
-    id 'com.modrinth.minotaur' version '2.8.3'
 }
 
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
@@ -58,6 +59,10 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
+sourcesJar {
+    from(project(":Forge").sourceSets.main.allSource)
+}
+
 def replaceProperties = [
         mod_id                 : mod_id,
         mod_name               : mod_name,
@@ -107,29 +112,4 @@ publishing {
             artifact sourcesJar
         }
     }
-}
-
-curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN")
-
-    project {
-        id = curseforge_id
-        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20-Forge'
-        releaseType = 'release'
-        addGameVersion minecraft_version
-
-        mainArtifact(jar) {
-            it.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
-        }
-    }
-}
-
-modrinth {
-    token = System.getenv("modrinthKey")
-    projectId = mod_id
-    versionNumber = project.version
-    versionType = "release"
-    uploadFile = jar
-    gameVersions = ["${project.minecraft_version}"]
-    loaders = ["forge"]
 }
