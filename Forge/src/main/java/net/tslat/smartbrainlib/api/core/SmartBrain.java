@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * library. <br>
  * Any entity that returns a {@link SmartBrainProvider} from
  * {@link LivingEntity#brainProvider()} will have one of these.
- * 
+ *
  * @param <E> The entity
  */
 public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Brain<E> {
@@ -48,7 +48,6 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	private final List<ActivityBehaviours<E>> behaviours = new ObjectArrayList<>();
 	private final List<Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>>> sensors = new ObjectArrayList<>();
 	private SmartBrainSchedule schedule = null;
-
 	private boolean sortBehaviours = false;
 
 	public SmartBrain(E owner, List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList, boolean saveMemories) {
@@ -111,7 +110,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		if (this.schedule != null) {
 			Activity scheduledActivity = this.schedule.tick(entity);
 
-			if (scheduledActivity != null && !getActiveActivities().contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
+			if (scheduledActivity != null && !activeActivities.contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
 				setActiveActivity(scheduledActivity);
 
 				return;
@@ -132,7 +131,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
 			for (Pair<Activity, List<BehaviorControl<? super E>>> pair : behaviourGroup.behaviours) {
-				if (getActiveActivities().contains(pair.getFirst())) {
+				if (activeActivities.contains(pair.getFirst())) {
 					for (BehaviorControl<? super E> behaviour : pair.getSecond()) {
 						if (behaviour.getStatus() == Behavior.Status.STOPPED)
 							behaviour.tryStart(level, entity, gameTime);
@@ -275,6 +274,18 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return this.behaviours.stream().map(ActivityBehaviours::behaviours).flatMap(list -> list.stream().map(Pair::getSecond).flatMap(List::stream));
 	}
 
+	public HashMap<Activity, ArrayList<BehaviorControl<? super E>>> getActivityBehaviors() {
+		HashMap<Activity, ArrayList<BehaviorControl<? super E>>> activityMap = new HashMap<>();
+		for (ActivityBehaviours<E> activityBehaviours : this.behaviours) {
+			for (Pair<Activity, List<BehaviorControl<? super E>>> activityList : activityBehaviours.behaviours) {
+				ArrayList<BehaviorControl<? super E>> behaviors = activityMap.getOrDefault(activityList.getFirst(), new ArrayList<>());
+				behaviors.addAll(activityList.getSecond());
+				activityMap.put(activityList.getFirst(), behaviors);
+			}
+		}
+		return activityMap;
+	}
+
 	@Override
 	public void removeAllBehaviors() {
 		this.behaviours.clear();
@@ -301,7 +312,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	/**
 	 * Add a behaviour to the behaviours list of this brain.
-	 * 
+	 *
 	 * @param priority  The behaviour's priority value
 	 * @param activity  The behaviour's activity category
 	 * @param behaviour The behaviour instance

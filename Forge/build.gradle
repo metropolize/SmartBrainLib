@@ -6,7 +6,7 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-archivesBaseName = "${mod_name}-forge-${minecraft_version}"
+archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 
 minecraft {
     mappings channel: mappings_channel, version: "${mappings_version}-${minecraft_version}"
@@ -66,6 +66,7 @@ sourcesJar {
 def replaceProperties = [
         mod_id                 : mod_id,
         mod_name               : mod_name,
+        mod_author             : mod_author,
         mod_version            : version,
         minecraft_version      : minecraft_version,
         minecraft_version_range: minecraft_version_range,
