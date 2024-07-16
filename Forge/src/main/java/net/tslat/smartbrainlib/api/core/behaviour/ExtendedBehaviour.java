@@ -148,7 +148,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param entity The entity the brain belongs to
 	 * @return Whether the behavior can start
 	 */
-	public final boolean canStart(ServerLevel level, E entity) {
+	public boolean canStart(ServerLevel level, E entity) {
 		return doStartCheck(level, entity, level.getGameTime());
 	}
 

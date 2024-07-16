@@ -56,6 +56,14 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 	}
 
 	@Override
+	public final boolean canStart(ServerLevel level, E entity) {
+		if (!super.doStartCheck(level, entity, level.getGameTime())) {
+			return false;
+		}
+		return this.behaviours.stream().anyMatch(b -> b.canStart(level, entity));
+	}
+
+	@Override
 	protected boolean shouldKeepRunning(E entity) {
 		return this.runningBehaviour != null && this.runningBehaviour.canStillUse((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 	}
