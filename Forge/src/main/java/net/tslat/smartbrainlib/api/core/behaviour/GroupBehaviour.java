@@ -89,7 +89,7 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 		super.stop(level, entity, gameTime);
 
 		if (this.runningBehaviour != null)
-			this.runningBehaviour.stop(level, entity, gameTime);
+			this.runningBehaviour.doStop(level, entity, gameTime);
 
 		this.runningBehaviour = null;
 	}
